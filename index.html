@@ -1,58 +1,518 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi curso en línea</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #eef2f7;
-      color: #243247;
-    }
-
-    main {
-      max-width: 750px;
-      margin: 60px auto;
-      padding: 32px;
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    h1 {
-      color: #174ea6;
-    }
-
-    p {
-      line-height: 1.6;
-    }
-
-    .aviso {
-      padding: 16px;
-      background: #e8f0fe;
-      border-radius: 10px;
-    }
-
-    @media (max-width: 600px) {
-      main {
-        margin: 20px 12px;
-        padding: 24px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curso recurrente IVA-A-01</title>
+<style>
+:root {
+  --azul: #153c68;
+  --acento: #087f8c;
+  --fondo: #f1f5f9;
+  --texto: #203047;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.65;
+}
+header {
+  background: linear-gradient(120deg, var(--azul), var(--acento));
+  color: white;
+  padding: 38px 22px;
+}
+header div, main {
+  max-width: 1050px;
+  margin: auto;
+}
+h1 { line-height: 1.2; }
+main { padding: 22px; }
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+button {
+  background: var(--azul);
+  color: white;
+  border: 0;
+  border-radius: 9px;
+  padding: 12px 17px;
+  cursor: pointer;
+  font: inherit;
+}
+button:hover { background: var(--acento); }
+button:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 3px solid #e5a900;
+  outline-offset: 3px;
+}
+nav button[aria-current="page"] { background: var(--acento); }
+.panel {
+  background: white;
+  padding: 26px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px #153c6810;
+}
+.aviso {
+  background: #fff5d6;
+  border-left: 5px solid #d39b00;
+  padding: 16px;
+  border-radius: 8px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.tarjeta {
+  background: #eaf4f7;
+  border-top: 4px solid var(--acento);
+  padding: 16px;
+  border-radius: 10px;
+}
+.tarjeta span {
+  display: block;
+  color: var(--acento);
+  font-weight: bold;
+  font-size: 22px;
+}
+details {
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0;
+}
+summary { cursor: pointer; font-weight: bold; }
+fieldset {
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  margin: 15px 0;
+  padding: 16px;
+}
+legend { font-weight: bold; padding: 0 6px; }
+label {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+}
+input[type="radio"] { margin-right: 9px; }
+.feedback {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+footer {
+  max-width: 1050px;
+  margin: auto;
+  padding: 0 22px 30px;
+  font-size: 14px;
+}
+progress { width: 100%; height: 20px; }
+@media(max-width: 600px) {
+  main { padding: 12px; }
+  .panel { padding: 18px; }
+  header { padding: 25px 18px; }
+}
+</style>
 </head>
 <body>
-  <main>
-    <h1>Bienvenido a mi curso</h1>
+
+<header>
+  <div>
+    <p>Curso recurrente · Ingeniería</p>
+    <h1>Inspector Verificador Aeronáutico IVA-A-01</h1>
+    <p>Lecciones, esquemas visuales y actividades de comprensión.</p>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Antes de comenzar</h2>
     <p>
-      Este será el espacio para las lecciones, infografías
-      y actividades de evaluación.
+      Recorre los módulos en orden, consulta las explicaciones
+      y contesta las actividades de práctica.
     </p>
     <div class="aviso">
-      Página de prueba. El contenido del curso se agregará después.
+      Versión inicial para revisión. Las actividades no constituyen
+      una acreditación ni una autorización operacional.
+      El envío de resultados por correo todavía no está habilitado.
     </div>
-  </main>
+    <p id="avance">Módulos con práctica respondida: 0 de 6</p>
+    <progress id="barra" value="0" max="6">0 de 6</progress>
+  </section>
+
+  <nav id="menu" aria-label="Módulos del curso"></nav>
+  <section id="contenido" class="panel" aria-label="Contenido del módulo"></section>
+
+  <section class="panel">
+    <h2>Resultado de práctica</h2>
+    <p>
+      Cuando hayas respondido las actividades de los seis módulos,
+      podrás consultar el resultado conjunto.
+    </p>
+    <button type="button" id="verResultado">Ver resultado</button>
+    <p id="resultado" role="status"></p>
+    <p>
+      Las respuestas se conservan únicamente mientras esta página
+      permanezca abierta. Si la recargas, la práctica se reinicia.
+    </p>
+  </section>
+</main>
+
+<footer>
+  Material elaborado a partir de las presentaciones M00–M05.
+  Las referencias normativas pendientes de validación no se utilizan
+  como respuestas calificables. No ingreses datos personales:
+  esta versión no necesita nombre ni correo.
+</footer>
+
+<script>
+const modulos = [
+{
+  codigo: "M00",
+  titulo: "Introducción",
+  objetivo: "Conocer la organización del curso, sus materiales y las reglas de participación.",
+  tarjetas: [
+    ["Participante", "Nombre completo, estudios, experiencia y puesto actual."],
+    ["Convivencia", "Respeto, participación activa y uso adecuado de dispositivos."],
+    ["Materiales", "Presentaciones, SharePoint y disposiciones normativas."],
+    ["Evaluación", "La presentación menciona cuatro pruebas de dominio, participación y 80% de asistencia."]
+  ],
+  lecciones: [
+    ["Organización del curso",
+     "El módulo introduce al participante y presenta los aspectos administrativos. Las reglas de horario, alimentos y permanencia en el aula corresponden al contexto presencial del material."],
+    ["Asistencia y calificación",
+     "El 80% indicado en la presentación es un requisito de asistencia. No equivale a una calificación mínima aprobatoria. Las ponderaciones, intentos y reglas de aprobación están pendientes de definición."]
+  ],
+  aviso: "Esta página no mide asistencia. Abrir un módulo no demuestra por sí mismo asistencia ni aprendizaje.",
+  preguntas: [
+    {
+      texto: "¿A qué corresponde el 80% mencionado en M00?",
+      opciones: ["A la asistencia", "A la nota mínima del examen", "Al peso del examen final"],
+      correcta: 0,
+      explicacion: "La presentación lo identifica como porcentaje de asistencia."
+    },
+    {
+      texto: "¿Qué dato forma parte de la presentación del participante?",
+      opciones: ["La contraseña de su correo", "Su puesto actual", "Sus datos bancarios"],
+      correcta: 1,
+      explicacion: "El material solicita nombre, estudios y experiencia, y puesto actual."
+    }
+  ]
+},
+{
+  codigo: "M01",
+  titulo: "Legislación aeronáutica y procedimientos",
+  objetivo: "Reconocer los organismos, documentos y responsabilidades descritos en el material.",
+  tarjetas: [
+    ["Internacional", "ONU, OACI, IATA, OMM y UIT."],
+    ["Documentos", "Convenio, anexos y documentos de orientación."],
+    ["Nacional", "Leyes, reglamentos, NOM, circulares y cartas de política."],
+    ["Verificación", "Cumplimiento documental, implementación, evidencia y fundamento."]
+  ],
+  lecciones: [
+    ["Mapa de organismos",
+     "La presentación introduce organismos internacionales y autoridades de aviación, además de organismos nacionales como SENEAM y ASA. El objetivo es distinguir sus funciones, sin confundir una asociación de aerolíneas con una autoridad aeronáutica."],
+    ["Vigilancia de la seguridad operacional",
+     "El material organiza los ocho elementos críticos en legislación, reglamentos, organización, personal técnico, orientación técnica, licencias y aprobaciones, vigilancia continua y resolución de problemas."],
+    ["Documentos y hallazgos",
+     "La revisión contempla el cumplimiento documental y la implementación. Según la presentación, cada hallazgo debe tener fundamento legal y pruebas o evidencias que justifiquen lo asentado en el acta."]
+  ],
+  aviso: "Las fechas de última reforma y la afirmación sobre ausencia de actualizaciones deben verificarse antes de publicarse como información vigente.",
+  preguntas: [
+    {
+      texto: "Según el material, ¿qué debe sustentar un hallazgo?",
+      opciones: ["Sólo una opinión", "Fundamento legal y evidencia", "Únicamente una fotografía sin contexto"],
+      correcta: 1,
+      explicacion: "La presentación exige fundamento legal y pruebas o evidencias."
+    },
+    {
+      texto: "¿Qué dos aspectos se consideran en la evaluación descrita?",
+      opciones: ["Documentación e implementación", "Diseño y publicidad", "Precio y popularidad"],
+      correcta: 0,
+      explicacion: "El material distingue cumplimiento documental y cumplimiento de la implementación."
+    }
+  ]
+},
+{
+  codigo: "M02",
+  titulo: "Aprobación de manuales",
+  objetivo: "Comprender la revisión documental del programa de deshielo y antihielo en tierra.",
+  tarjetas: [
+    ["1 · Recepción", "Identificar la solicitud y la documentación presentada."],
+    ["2 · Análisis", "Revisar contenido, referencias y documentación aplicable."],
+    ["3 · Resultado", "Determinar si procede continuar o comunicar observaciones."],
+    ["Concepto", "El material desarrolla el concepto de Avión Limpio."]
+  ],
+  lecciones: [
+    ["Programa de deshielo y antihielo",
+     "La presentación aborda programas y procedimientos para aeronaves en tierra que operan en climas fríos. Describe contaminantes como hielo, nieve, aguanieve y escarcha, dentro del concepto de Avión Limpio."],
+    ["Revisión de la solicitud",
+     "El objetivo es revisar la documentación del solicitante y determinar si el trámite continúa para emitir la aprobación del manual. El archivo referencia la lista MIO-FT037-01, pero esta síntesis no reproduce sus campos."],
+    ["Límites de esta lección",
+     "Este módulo trata comprensión conceptual y evaluación documental. No proporciona instrucciones para aplicar fluidos, seleccionar tiempos de protección o autorizar un despegue."]
+  ],
+  aviso: "Pendiente: aclarar los numerales aplicables de CO-AV-9.2/07 y la referencia a NOM-006-SCT3-2012. No se evalúan esas correspondencias.",
+  preguntas: [
+    {
+      texto: "¿Cuál es el enfoque del objetivo del módulo?",
+      opciones: ["Aplicar fluidos sin supervisión", "Revisar documentación para la aprobación del manual", "Diseñar una aeronave"],
+      correcta: 1,
+      explicacion: "El objetivo se refiere a la revisión documental y continuidad del trámite."
+    },
+    {
+      texto: "¿Qué secuencia corresponde al esquema del material?",
+      opciones: ["Respuesta, recepción, análisis", "Recepción, análisis, respuesta", "Análisis, respuesta, recepción"],
+      correcta: 1,
+      explicacion: "La presentación organiza el proceso en recepción, análisis y respuesta."
+    }
+  ]
+},
+{
+  codigo: "M03",
+  titulo: "Aprobaciones de operaciones especiales",
+  objetivo: "Distinguir los procesos y las responsabilidades descritos para operaciones especiales.",
+  tarjetas: [
+    ["CAT II/III", "Distinguir aeronavegabilidad y aprobación operacional."],
+    ["EDTO", "Reconocer las fases de certificación y la revisión documental."],
+    ["SET-IMC", "Identificar la documentación de aeronavegabilidad y operación."],
+    ["EFB / C-EFB", "Distinguir equipos, aplicaciones y participación de inspectores."]
+  ],
+  lecciones: [
+    ["Dos aprobaciones diferentes",
+     "Para CAT II/III, el material distingue la aprobación de aeronavegabilidad de la aprobación operacional. El oficio de aeronavegabilidad no equivale por sí solo a la autorización operacional."],
+    ["Proceso EDTO",
+     "Las fases descritas son solicitud de información, etapa de planificación y solicitud, evaluación documental, demostración operacional y emisión de la aprobación operacional. La revisión contempla participación coordinada de inspectores."],
+    ["SET-IMC",
+     "La presentación aborda aeronaves monomotoras de turbina en vuelo nocturno o condiciones meteorológicas de vuelo por instrumentos. Incluye confiabilidad, sistemas, equipo y documentación."],
+    ["EFB y C-EFB",
+     "El material distingue dispositivos portátiles e instalados y aplicaciones tipo A y B. Para la revisión, diferencia aspectos de instalación, alimentación, sujeción, uso operacional y capacitación."]
+  ],
+  aviso: "Pendientes de aclaración: explicación inicial CAT II/III, simplificación de EDTO, referencias de formatos y diapositivas RVSM dentro de SET-IMC. No se evalúan mínimos operacionales ni esas inconsistencias.",
+  preguntas: [
+    {
+      texto: "¿La aprobación de aeronavegabilidad CAT II/III equivale por sí sola a la operacional?",
+      opciones: ["Sí, siempre", "No, son aprobaciones distintas", "Sólo depende del nombre del solicitante"],
+      correcta: 1,
+      explicacion: "La presentación distingue expresamente ambas aprobaciones."
+    },
+    {
+      texto: "¿Qué fase verifica en la práctica lo presentado en el proceso EDTO?",
+      opciones: ["Demostración operacional", "Diseño de publicidad", "Registro de visitantes"],
+      correcta: 0,
+      explicacion: "La fase de demostración operacional permite corroborar lo presentado en las etapas anteriores."
+    }
+  ]
+},
+{
+  codigo: "M04",
+  titulo: "Proceso de otorgamiento de un AOC",
+  objetivo: "Reconocer las cinco fases del proceso de certificación y su relación con la documentación y demostraciones.",
+  tarjetas: [
+    ["1", "Presolicitud"],
+    ["2", "Solicitud formal"],
+    ["3", "Evaluación de documentos"],
+    ["4", "Demostración e inspección"],
+    ["5", "Certificación"]
+  ],
+  lecciones: [
+    ["Qué representa el AOC",
+     "El material describe el Certificado de Explotador de Servicios Aéreos como un certificado que autoriza operaciones de transporte aéreo comercial especificadas. Su alcance se relaciona con las especificaciones de operación."],
+    ["De la solicitud a la demostración",
+     "La presolicitud orienta al interesado. La solicitud formal reúne el paquete documental. La evaluación revisa los manuales y documentos. La demostración e inspección permite observar instalaciones, aeronaves, personal y aplicación de procedimientos."],
+    ["Participación del LEC",
+     "El Líder de Equipo de Certificación coordina la revisión entre especialidades. La documentación se distribuye según las funciones y calificaciones de los participantes."],
+    ["Vuelos y seguimiento",
+     "Los vuelos de demostración tienen un proceso propio, que no debe confundirse con las cinco fases generales del AOC. El material también contempla vigilancia posterior, renovación y enmiendas."]
+  ],
+  aviso: "La vigencia del certificado, los plazos, las horas de demostración y algunos identificadores de formatos quedan pendientes de validación normativa. Esta práctica no los evalúa.",
+  preguntas: [
+    {
+      texto: "¿Qué fase sigue a la solicitud formal?",
+      opciones: ["Certificación inmediata", "Evaluación de documentos", "Renovación"],
+      correcta: 1,
+      explicacion: "El orden del material es presolicitud, solicitud formal, evaluación documental, demostración e inspección y certificación."
+    },
+    {
+      texto: "¿En qué fase se observan instalaciones y desempeño del personal?",
+      opciones: ["Demostración e inspección", "Únicamente presolicitud", "Diseño del certificado"],
+      correcta: 0,
+      explicacion: "La fase 4 contempla revisión física y observación del desempeño."
+    }
+  ]
+},
+{
+  codigo: "M05",
+  titulo: "Facilidades de estación",
+  objetivo: "Identificar áreas de revisión y evidencias de las facilidades de mantenimiento.",
+  tarjetas: [
+    ["Documentación", "Permiso, manual, contratos y alcance del servicio."],
+    ["Personal", "Licencias, calificaciones y capacitación."],
+    ["Recursos", "Datos técnicos, equipo, herramientas y calibración aplicable."],
+    ["Instalaciones", "Áreas de trabajo, almacén, preservación y procedimientos."]
+  ],
+  lecciones: [
+    ["Alcance de la revisión",
+     "La inspección busca verificar los recursos de un taller propio o contratado para prestar mantenimiento. El material contempla instalaciones nacionales o en el extranjero."],
+    ["Personal y datos técnicos",
+     "La revisión incluye la relación de personal, información de licencias y capacitación, además de manuales, boletines y acceso a información técnica."],
+    ["Herramientas y almacén",
+     "Se revisan equipos y herramientas apropiados, calibración cuando aplique, identificación y segregación de componentes, preservación y condiciones de almacenamiento."],
+    ["Procedimientos en práctica",
+     "La presentación propone comprobar los procedimientos establecidos y observar servicios de mantenimiento. Tener documentación no demuestra por sí solo su aplicación."]
+  ],
+  aviso: "La guía AFAC 145.1/22G se menciona como referencia. La sección de respuesta mezcla aprobación de manuales con facilidades de estación y requiere aclaración.",
+  preguntas: [
+    {
+      texto: "¿Qué evidencia se relaciona con la revisión del personal?",
+      opciones: ["Licencias y constancias de capacitación", "Sólo una fotografía grupal", "El color del uniforme"],
+      correcta: 0,
+      explicacion: "El material solicita datos de licencias, calificación y capacitación del personal."
+    },
+    {
+      texto: "¿Qué permite comprobar la aplicación de los procedimientos?",
+      opciones: ["Sólo leer el índice", "Observar servicios de mantenimiento", "Cambiar el título del manual"],
+      correcta: 1,
+      explicacion: "La presentación contempla observar servicios para comprobar la operación y los procedimientos."
+    }
+  ]
+}
+];
+
+let actual = 0;
+const intentos = Array(modulos.length).fill(null);
+const menu = document.getElementById("menu");
+const contenido = document.getElementById("contenido");
+
+modulos.forEach((m, i) => {
+  const boton = document.createElement("button");
+  boton.type = "button";
+  boton.textContent = m.codigo;
+  boton.addEventListener("click", () => mostrar(i));
+  menu.appendChild(boton);
+});
+
+function mostrar(i) {
+  actual = i;
+  const m = modulos[i];
+
+  [...menu.children].forEach((b, j) => {
+    if (i === j) b.setAttribute("aria-current", "page");
+    else b.removeAttribute("aria-current");
+  });
+
+  contenido.innerHTML = `
+    <p>${m.codigo} · Lección y práctica</p>
+    <h2>${m.titulo}</h2>
+    <p>${m.objetivo}</p>
+
+    <h3>Esquema visual</h3>
+    <div class="grid">
+      ${m.tarjetas.map(t => `
+        <div class="tarjeta"><span>${t[0]}</span>${t[1]}</div>
+      `).join("")}
+    </div>
+
+    <h3>Explora el contenido</h3>
+    ${m.lecciones.map(l => `
+      <details>
+        <summary>${l[0]}</summary>
+        <p>${l[1]}</p>
+      </details>
+    `).join("")}
+
+    <p class="aviso">${m.aviso}</p>
+
+    <h3>Actividad de comprensión</h3>
+    <p>Puedes repetir esta práctica. No es un examen final.</p>
+    <form id="practica">
+      ${m.preguntas.map((q, qi) => `
+        <fieldset>
+          <legend>${qi + 1}. ${q.texto}</legend>
+          ${q.opciones.map((op, oi) => `
+            <label>
+              <input type="radio" name="q${qi}" value="${oi}" required>
+              ${op}
+            </label>
+          `).join("")}
+          <div id="feedback${qi}" class="feedback" hidden></div>
+        </fieldset>
+      `).join("")}
+      <button type="submit">Revisar mis respuestas</button>
+    </form>
+    <p id="notaModulo" role="status"></p>
+    <button type="button" id="siguiente">
+      ${i < modulos.length - 1 ? "Ir al siguiente módulo" : "Volver a M00"}
+    </button>
+  `;
+
+  if (intentos[i]) {
+    intentos[i].respuestas.forEach((r, qi) => {
+      contenido.querySelector(`input[name="q${qi}"][value="${r}"]`).checked = true;
+    });
+    mostrarFeedback(i);
+  }
+
+  document.getElementById("practica").addEventListener("submit", e => {
+    e.preventDefault();
+    const datos = new FormData(e.currentTarget);
+    const respuestas = m.preguntas.map((q, qi) => Number(datos.get("q" + qi)));
+    const aciertos = respuestas.filter((r, qi) => r === m.preguntas[qi].correcta).length;
+    intentos[i] = { respuestas, aciertos };
+    mostrarFeedback(i);
+    actualizarAvance();
+    document.getElementById("resultado").textContent = "";
+  });
+
+  document.getElementById("siguiente").addEventListener("click", () => {
+    mostrar((i + 1) % modulos.length);
+    contenido.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+function mostrarFeedback(i) {
+  const m = modulos[i];
+  const intento = intentos[i];
+  m.preguntas.forEach((q, qi) => {
+    const caja = document.getElementById("feedback" + qi);
+    const bien = intento.respuestas[qi] === q.correcta;
+    caja.hidden = false;
+    caja.textContent = (bien ? "Correcto. " : "Revisa: ") + q.explicacion;
+  });
+  document.getElementById("notaModulo").textContent =
+    `Resultado de práctica: ${intento.aciertos} de ${m.preguntas.length} respuestas correctas.`;
+}
+
+function actualizarAvance() {
+  const completados = intentos.filter(Boolean).length;
+  document.getElementById("avance").textContent =
+    `Módulos con práctica respondida: ${completados} de ${modulos.length}`;
+  document.getElementById("barra").value = completados;
+}
+
+document.getElementById("verResultado").addEventListener("click", () => {
+  const salida = document.getElementById("resultado");
+  if (intentos.some(x => x === null)) {
+    salida.textContent = "Responde primero las actividades de los seis módulos.";
+    return;
+  }
+  const total = modulos.reduce((s, m) => s + m.preguntas.length, 0);
+  const aciertos = intentos.reduce((s, r) => s + r.aciertos, 0);
+  const nota = Math.round(aciertos / total * 100);
+  salida.textContent =
+    `Resultado: ${aciertos} de ${total} respuestas correctas (${nota}/100). ` +
+    "Es un resultado de práctica, calculado con el último intento de cada módulo. " +
+    "No se ha enviado por correo ni registrado en un servidor.";
+});
+
+mostrar(0);
+</script>
 </body>
 </html>
