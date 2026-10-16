@@ -511,7 +511,1614 @@ document.getElementById("verResultado").addEventListener("click", () => {
     "Es un resultado de práctica, calculado con el último intento de cada módulo. " +
     "No se ha enviado por correo ni registrado en un servidor.";
 });
+/* ACTUALIZACIÓN DE CONTENIDO Y DIAGRAMAS */
 
+const estiloLecciones = document.createElement("style");
+
+estiloLecciones.textContent = `
+  .leccion-ampliada {
+    margin: 30px 0;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #dce5ee;
+  }
+
+  .leccion-ampliada p {
+    max-width: 90ch;
+    margin: 16px 0;
+  }
+
+  .leccion-ampliada li {
+    margin-bottom: 10px;
+  }
+
+  .diagrama-curso {
+    margin: 25px 0;
+    padding: 22px;
+    background: #f1f7fb;
+    border: 1px solid #d9e7ef;
+    border-radius: 14px;
+  }
+
+  .diagrama-curso figcaption {
+    margin: 0 0 18px;
+    font-size: 17px;
+    color: #163c65;
+    font-weight: bold;
+  }
+
+  .cadena-curso {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    counter-reset: etapa;
+  }
+
+  .cadena-curso li {
+    flex: 1 1 150px;
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    border-top: 4px solid #087f8c;
+    margin: 0;
+  }
+
+  .cadena-curso li::before {
+    counter-increment: etapa;
+    content: counter(etapa);
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    color: white;
+    background: #087f8c;
+    margin-bottom: 10px;
+  }
+
+  .cadena-curso b,
+  .mapa-curso b {
+    display: block;
+    color: #163c65;
+    margin-bottom: 8px;
+  }
+
+  .mapa-curso {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+  }
+
+  .mapa-curso > div {
+    padding: 18px;
+    background: white;
+    border-radius: 10px;
+    border-left: 4px solid #087f8c;
+  }
+
+  .idea-curso {
+    background: #e9f5f2;
+    border-left: 5px solid #24826c;
+    padding: 18px;
+    margin: 22px 0;
+    border-radius: 8px;
+  }
+
+  .fuente-curso {
+    font-size: 14px;
+    background: #f4f6f9;
+    color: #52647a;
+    border-radius: 9px;
+    padding: 16px;
+    margin-top: 25px;
+    overflow-wrap: anywhere;
+  }
+
+  .tabla-contenedor {
+    overflow-x: auto;
+    margin: 22px 0;
+  }
+
+  .tabla-curso {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+
+  .tabla-curso th,
+  .tabla-curso td {
+    border: 1px solid #dce5ee;
+    padding: 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .tabla-curso th {
+    color: white;
+    background: #163c65;
+  }
+
+  @media (max-width: 600px) {
+    .diagrama-curso {
+      padding: 15px;
+    }
+  }
+`;
+
+document.head.appendChild(estiloLecciones);
+
+function flujoCurso(titulo, etapas) {
+  return `
+    <figure class="diagrama-curso">
+      <figcaption>${titulo}</figcaption>
+      <ol class="cadena-curso">
+        ${etapas.map(etapa => `
+          <li>
+            <b>${etapa[0]}</b>
+            <span>${etapa[1]}</span>
+          </li>
+        `).join("")}
+      </ol>
+    </figure>
+  `;
+}
+
+function mapaCurso(titulo, elementos) {
+  return `
+    <figure class="diagrama-curso">
+      <figcaption>${titulo}</figcaption>
+      <div class="mapa-curso">
+        ${elementos.map(elemento => `
+          <div>
+            <b>${elemento[0]}</b>
+            <span>${elemento[1]}</span>
+          </div>
+        `).join("")}
+      </div>
+    </figure>
+  `;
+}
+
+function leccionCurso(titulo, html) {
+  return { titulo, html };
+}
+
+/* M00: únicamente bienvenida y orientación */
+
+modulos[0].titulo = "Bienvenida al curso";
+
+modulos[0].objetivo =
+  "Conocer el recorrido del curso recurrente IVA-A-01.";
+
+modulos[0].tarjetas = [];
+
+modulos[0].bloques = [
+  bloque(
+    "Bienvenido",
+    "Este curso está dirigido al estudio de las tareas del Inspector Verificador Aeronáutico en el ámbito de ingeniería. El recorrido comienza con legislación aeronáutica y continúa con aprobación de manuales, operaciones especiales, otorgamiento de un AOC y facilidades de estación."
+  ),
+  bloque(
+    "Cómo estudiar",
+    "Recorre los módulos en orden. Lee cada explicación y utiliza los diagramas para comprender cómo se relacionan los conceptos y las etapas de los procedimientos. Después analiza los ejemplos y los casos. Puedes volver a cualquier módulo mediante los botones de navegación."
+  )
+];
+
+modulos[0].preguntas = [];
+modulos[0].aviso = "";
+modulos[0].pasos = [];
+
+/* M01 */
+
+modulos[1].leccionesNuevas = [
+  leccionCurso(
+    "1. Cooperación internacional y autoridades de aviación",
+    `
+      <p>
+        La aviación civil necesita coordinación entre Estados porque
+        una operación puede relacionar aeronaves, aeropuertos,
+        personal y servicios de distintos países. Para comprender
+        esa coordinación es necesario distinguir los organismos
+        que facilitan la cooperación internacional, las asociaciones
+        que representan a la industria y las autoridades que ejercen
+        funciones de regulación y vigilancia.
+      </p>
+
+      <p>
+        La Organización de las Naciones Unidas —ONU— constituye
+        un marco de cooperación entre Estados. Dentro de ese
+        entorno, la Organización de Aviación Civil Internacional
+        —OACI— facilita la cooperación técnica y diplomática en
+        aviación civil. Su función permite que los países trabajen
+        con criterios compartidos para el desarrollo seguro y
+        ordenado de la aviación internacional.
+      </p>
+
+      <p>
+        La Asociación de Transporte Aéreo Internacional —IATA—
+        tiene una naturaleza distinta: promueve la cooperación
+        entre aerolíneas y el desarrollo de servicios aéreos seguros,
+        confiables y eficientes. Representar a empresas y facilitar
+        su cooperación no equivale a ejercer las facultades de una
+        autoridad aeronáutica nacional.
+      </p>
+
+      ${mapaCurso("Organismos: funciones que se complementan", [
+        ["OACI", "Cooperación internacional y criterios técnicos de aviación civil."],
+        ["IATA", "Cooperación entre aerolíneas y desarrollo del transporte aéreo."],
+        ["OMM", "Atmósfera, tiempo, clima y recursos hídricos."],
+        ["UIT", "Telecomunicaciones, espectro, conectividad y normas técnicas."]
+      ])}
+
+      <p>
+        La Organización Meteorológica Mundial —OMM— se relaciona
+        con el conocimiento del estado de la atmósfera y su
+        comportamiento. La Unión Internacional de
+        Telecomunicaciones —UIT— aborda la coordinación de
+        comunicaciones y tecnologías, incluidos aspectos del
+        espectro radioeléctrico. Sus materias son distintas,
+        aunque se relacionan con los servicios que hacen posible
+        una operación aérea.
+      </p>
+
+      <p>
+        Entre las referencias de autoridades de aviación se
+        encuentran FAA, EASA, ANAC de Brasil y Transport Canada.
+        En una revisión documental importa identificar qué
+        autoridad emitió un certificado o aprobación y cuál es el
+        alcance del documento, en lugar de asumir que cualquier
+        organización vinculada con la aviación tiene las mismas
+        atribuciones.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "2. Convenio, anexos, SARPS, PANS y documentos de orientación",
+    `
+      <p>
+        El Convenio sobre Aviación Civil Internacional constituye
+        el marco de cooperación para la aviación civil
+        internacional. Sus materias comprenden navegación aérea,
+        organización de la OACI, transporte aéreo internacional y
+        disposiciones finales. Los anexos desarrollan materias
+        técnicas mediante normas y métodos recomendados.
+      </p>
+
+      <p>
+        Una norma es una especificación cuya aplicación uniforme
+        se considera necesaria para facilitar o mejorar la
+        navegación aérea internacional. Un método recomendado
+        es una especificación cuya aplicación se considera
+        conveniente y a la cual los Estados procuran ajustarse.
+        La distinción importa porque no deben leerse como si
+        ambos tipos de disposición tuvieran idéntica condición.
+      </p>
+
+      <p>
+        Las normas y métodos recomendados se conocen como SARPS.
+        Los Procedimientos para los Servicios de Navegación
+        Aérea —PANS— complementan el desarrollo de procedimientos
+        y no tienen la misma categoría que los SARPS. Los manuales
+        y otros documentos de orientación ayudan a comprender
+        principios y a desarrollar su aplicación.
+      </p>
+
+      ${mapaCurso("Cómo leer una referencia internacional", [
+        ["Convenio", "Marco de cooperación y organización."],
+        ["Anexos y SARPS", "Especificaciones técnicas: normas y métodos recomendados."],
+        ["PANS", "Procedimientos que complementan las materias correspondientes."],
+        ["Manuales", "Orientación para comprender y aplicar criterios técnicos."]
+      ])}
+
+      <div class="idea-curso">
+        Antes de utilizar una referencia, identifica su tipo,
+        materia, edición y relación con el requisito nacional
+        aplicable. El número de un documento, por sí solo,
+        no explica su alcance.
+      </div>
+    `
+  ),
+
+  leccionCurso(
+    "3. Vigilancia de la seguridad operacional: los ocho elementos críticos",
+    `
+      <p>
+        La vigilancia estatal requiere una estructura que permita
+        establecer requisitos y comprobar su cumplimiento. El
+        Programa Universal de Auditoría de Vigilancia de la
+        Seguridad Operacional —USOAP— se centra en la capacidad
+        del Estado para supervisar la seguridad operacional y
+        aplicar de manera eficaz los elementos críticos del sistema.
+      </p>
+
+      <p>
+        Los primeros cinco elementos construyen la base del
+        sistema. La legislación otorga atribuciones y
+        responsabilidades; los reglamentos desarrollan requisitos
+        de explotación; la organización define funciones y recursos;
+        el personal técnico aporta competencia; y la orientación
+        técnica proporciona procedimientos, herramientas e
+        información para realizar el trabajo de forma normalizada.
+      </p>
+
+      ${mapaCurso("Establecer el sistema: CE-1 a CE-5", [
+        ["CE-1 · Legislación", "Base jurídica para ejercer vigilancia y hacer cumplir los requisitos."],
+        ["CE-2 · Reglamentos", "Requisitos específicos para las actividades reguladas."],
+        ["CE-3 · Organización", "Autoridades, funciones, personal y recursos."],
+        ["CE-4 · Personal técnico", "Cualificaciones, instrucción inicial y formación continua."],
+        ["CE-5 · Orientación técnica", "Procedimientos, instrumentos e información crítica actualizada."]
+      ])}
+
+      <p>
+        Los tres elementos siguientes corresponden a la aplicación
+        del sistema. El otorgamiento de licencias, certificaciones
+        y aprobaciones verifica requisitos antes de permitir una
+        actividad. La vigilancia continua comprueba que las
+        condiciones se mantienen. La resolución de problemas exige
+        dar seguimiento a las discrepancias y verificar que las
+        medidas adoptadas resuelven la situación detectada.
+      </p>
+
+      ${flujoCurso("Aplicar el sistema: CE-6 a CE-8", [
+        ["Autorizar", "Comprobar requisitos antes de otorgar privilegios."],
+        ["Vigilar", "Realizar inspecciones, auditorías y seguimiento."],
+        ["Resolver", "Documentar medidas y verificar la solución de problemas."]
+      ])}
+
+      <p>
+        Por tanto, tener una ley o un manual no demuestra por sí
+        solo que existe vigilancia efectiva. Los documentos deben
+        traducirse en personal competente, decisiones sustentadas,
+        inspecciones y seguimiento de resultados.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "4. Documentos nacionales y funciones del inspector",
+    `
+      <p>
+        El marco nacional comprende Constitución, tratados,
+        leyes, reglamentos, Normas Oficiales Mexicanas, circulares
+        y cartas de política. Cada instrumento tiene una función
+        y un alcance. Para revisar un expediente no basta acumular
+        referencias: es necesario relacionar la actividad concreta
+        con la disposición que corresponde.
+      </p>
+
+      <p>
+        La Ley de Aviación Civil aborda la explotación, el uso
+        y aprovechamiento del espacio aéreo nacional en las
+        materias que regula. La Ley de Aeropuertos se relaciona
+        con construcción, administración, operación y explotación
+        de aeródromos civiles. Los reglamentos desarrollan las
+        disposiciones de las leyes respectivas.
+      </p>
+
+      <p>
+        Las NOM establecen requisitos y especificaciones técnicas.
+        Una circular obligatoria comunica disposiciones
+        técnico-administrativas de carácter obligatorio dentro
+        de su alcance. Una circular de asesoramiento proporciona
+        orientación. Una carta de política comunica aclaraciones,
+        lineamientos, políticas o procedimientos complementarios.
+      </p>
+
+      <p>
+        Los manuales de las especialidades orientan las tareas
+        de los inspectores en áreas como operaciones,
+        aeronavegabilidad, licencias y otras especialidades.
+        Su utilización debe conservar la relación con las
+        atribuciones y requisitos aplicables al asunto revisado.
+      </p>
+
+      ${flujoCurso("Del requisito a la revisión", [
+        ["Actividad", "¿Qué operación, servicio o trámite se revisa?"],
+        ["Instrumento", "¿Qué documento regula esa materia?"],
+        ["Disposición", "¿Qué requisito concreto corresponde?"],
+        ["Evidencia", "¿Qué demuestra su cumplimiento o incumplimiento?"]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "5. Verificación, hallazgos y documentación de resultados",
+    `
+      <p>
+        La revisión debe considerar dos dimensiones: cumplimiento
+        documental y cumplimiento de la implementación. La
+        primera comprueba que existen documentos y procedimientos
+        adecuados. La segunda verifica que las actividades se
+        realizan conforme a ellos.
+      </p>
+
+      <p>
+        Por ejemplo, disponer de un procedimiento de control de
+        registros no demuestra que todos los registros se elaboren
+        y conserven correctamente. Es necesario revisar muestras
+        y describir de forma precisa las condiciones observadas.
+        Este ejemplo ilustra por qué no deben confundirse
+        existencia documental y aplicación.
+      </p>
+
+      <p>
+        Un hallazgo necesita fundamento legal y evidencia.
+        Debe poder identificarse qué condición se observó,
+        en qué documento o actividad se encontró y qué requisito
+        permite evaluarla. Una frase como “el sistema está mal”
+        no proporciona por sí sola esa trazabilidad.
+      </p>
+
+      <p>
+        En las visitas de verificación se contemplan orden escrita,
+        identificación del verificador, acta circunstanciada y
+        documentación de la actuación, dentro del procedimiento
+        aplicable. Concluida la revisión, las pruebas y demás
+        información sustentan el análisis técnico y la comunicación
+        de resultados a las áreas correspondientes.
+      </p>
+
+      ${flujoCurso("Construcción didáctica de un hallazgo", [
+        ["Condición", "Describir lo observado sin ambigüedad."],
+        ["Evidencia", "Identificar registros, documentos o hechos."],
+        ["Fundamento", "Relacionar la condición con el requisito."],
+        ["Registro", "Documentar el resultado y su seguimiento."]
+      ])}
+
+      <p>
+        SENEAM y ASA también forman parte del entorno nacional
+        de la aviación: el primero se relaciona con servicios a la
+        navegación en el espacio aéreo mexicano y el segundo con
+        servicios e infraestructura aeroportuaria y actividades
+        auxiliares. Su función no debe confundirse con la tarea
+        específica de un inspector ni con la del área que resuelve
+        un trámite.
+      </p>
+    `
+  )
+];
+
+/* M02 */
+
+modulos[2].leccionesNuevas = [
+  leccionCurso(
+    "1. Finalidad del programa de deshielo y antihielo en tierra",
+    `
+      <p>
+        El programa de deshielo y antihielo organiza procedimientos
+        para aeronaves que operan en condiciones de clima frío.
+        Su finalidad se relaciona con mantener las condiciones de
+        aeronavegabilidad frente a la presencia o formación de
+        contaminantes naturales en tierra.
+      </p>
+
+      <p>
+        Hielo, nieve, aguanieve y escarcha no deben tratarse
+        únicamente como condiciones del entorno. La revisión
+        del programa debe relacionarlos con la inspección de
+        la aeronave, las superficies críticas y los procedimientos
+        aplicables a la operación prevista.
+      </p>
+
+      <p>
+        El programa puede presentarse como documento separado
+        o integrado en el Manual General de Operaciones. La
+        forma de presentación no elimina la necesidad de revisar
+        su contenido: el expediente debe permitir identificar los
+        procedimientos propuestos y su relación con los requisitos
+        aplicables.
+      </p>
+
+      ${mapaCurso("Qué debe relacionar la explicación del programa", [
+        ["Condiciones", "Clima frío y presencia o formación de contaminantes."],
+        ["Aeronave", "Superficies y criterios correspondientes al diseño."],
+        ["Procedimientos", "Inspección y tratamiento cuando corresponda."],
+        ["Verificación", "Revisión documental y comprobación de aplicación."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "2. Concepto de Avión Limpio",
+    `
+      <p>
+        El concepto de Avión Limpio se refiere a que las superficies
+        críticas de una aeronave de ala fija se encuentren libres
+        de los contaminantes señalados, con las excepciones
+        expresamente establecidas por la entidad responsable del
+        diseño de tipo respecto de áreas y cantidades que no
+        afecten su rendimiento.
+      </p>
+
+      <p>
+        Entre las superficies mencionadas se encuentran alas,
+        hélices, superficies de control y entradas de motores,
+        además de otras que determine el diseño de tipo. La
+        palabra “crítica” obliga a consultar la información
+        correspondiente a la aeronave; un dibujo general no
+        identifica todos los criterios de cada modelo.
+      </p>
+
+      <p>
+        La revisión no debe reducirse a buscar la frase “Avión
+        Limpio” en un manual. Es necesario comprender cómo los
+        procedimientos del programa se relacionan con la inspección
+        y con la conservación de las condiciones requeridas.
+        De esta manera, el concepto deja de ser una definición
+        aislada y se convierte en una referencia para analizar
+        el contenido documental.
+      </p>
+
+      ${mapaCurso("Superficies y criterios: esquema conceptual", [
+        ["Alas", "Revisión conforme a los criterios aplicables al modelo."],
+        ["Hélices", "Consideración de contaminantes en las superficies correspondientes."],
+        ["Controles", "Atención a las superficies de control."],
+        ["Entradas de motores", "Revisión dentro del alcance técnico aplicable."],
+        ["Diseño de tipo", "Determinación de otras superficies y excepciones autorizadas."]
+      ])}
+
+      <div class="idea-curso">
+        Este esquema explica el concepto. No es una lista de
+        inspección para autorizar una aeronave ni sustituye
+        los procedimientos específicos.
+      </div>
+    `
+  ),
+
+  leccionCurso(
+    "3. Relación entre referencias internacionales y nacionales",
+    `
+      <p>
+        Las referencias internacionales relacionan la preparación
+        del vuelo con las condiciones meteorológicas y con la
+        certificación y equipo de la aeronave. Para helicópteros
+        también se desarrolla la necesidad de inspección y,
+        cuando corresponda, tratamiento frente a contaminación
+        en tierra. Ambas materias deben conservar su contexto;
+        no deben trasladarse automáticamente todos los criterios
+        de un tipo de aeronave a otro.
+      </p>
+
+      <p>
+        En el ámbito nacional se relacionan las atribuciones de
+        la autoridad, la adopción de medidas para la seguridad
+        de la operación y la responsabilidad de no iniciar vuelos
+        en circunstancias que pongan en peligro la seguridad.
+        La NOM-008-SCT3-2002 incluye la referencia al programa de
+        deshielo y antihielo del titular o solicitante de un AOC
+        que opere o pretenda operar en las condiciones descritas.
+      </p>
+
+      <p>
+        La circular CO-AV-9.2/07 aborda operación en clima frío
+        y contaminantes naturales. Para utilizarla en una revisión
+        concreta se necesita identificar el apartado aplicable,
+        no citar únicamente su título. La correspondencia con
+        los campos de una lista de verificación debe sustentarse
+        documentalmente.
+      </p>
+
+      ${flujoCurso("Trazabilidad de una revisión documental", [
+        ["Referencia", "Identificar instrumento y apartado."],
+        ["Requisito", "Precisar qué exige para el caso."],
+        ["Programa", "Ubicar el procedimiento que responde al requisito."],
+        ["Resultado", "Registrar cumplimiento, falta de información o discrepancia."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "4. Recepción y análisis de la solicitud",
+    `
+      <p>
+        La tarea comienza con la asignación de una solicitud para
+        aprobación del manual. El inspector identifica el objeto
+        del trámite y revisa los documentos que acompañan la
+        petición. Esta primera lectura permite distinguir qué
+        se recibió y qué información se necesita para efectuar
+        el análisis.
+      </p>
+
+      <p>
+        Durante el análisis se revisa el contenido del programa
+        y su relación con las referencias aplicables. Conviene
+        separar tres situaciones: documento presentado,
+        documento suficiente para el análisis y documento que
+        demuestra correspondencia con el requisito. No son
+        condiciones equivalentes.
+      </p>
+
+      <p>
+        Por ejemplo, un índice puede mostrar que existe un
+        apartado de procedimientos, pero no acredita que ese
+        apartado esté desarrollado. De manera semejante,
+        mencionar un anexo no demuestra que el anexo forme parte
+        del expediente. Esta distinción ayuda a formular
+        observaciones concretas.
+      </p>
+
+      <p>
+        La referencia de revisión asociada al módulo es
+        MIO-FT037-01. Para utilizar sus campos es necesario
+        consultar el formato correspondiente. No debe reconstruirse
+        una lista oficial a partir del nombre ni sustituirse
+        por casillas inventadas.
+      </p>
+
+      ${flujoCurso("Recepción, revisión y respuesta", [
+        ["Recibir", "Identificar solicitud y anexos."],
+        ["Analizar", "Relacionar contenido y requisitos."],
+        ["Precisar", "Distinguir faltantes y discrepancias."],
+        ["Responder", "Documentar la continuidad o las observaciones."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "5. Resultado de la revisión y límites del contenido",
+    `
+      <p>
+        El objetivo de la revisión es determinar si existen
+        elementos para continuar el trámite de aprobación.
+        El resultado debe ser comprensible y trazable:
+        una observación necesita indicar qué información falta
+        o qué aspecto requiere corrección, en lugar de pedir
+        genéricamente “mejorar el manual”.
+      </p>
+
+      <p>
+        La revisión documental y la comprobación de aplicación
+        se complementan. Un programa correctamente redactado
+        requiere también que sus procedimientos se realicen
+        conforme a lo establecido en la inspección correspondiente.
+        Sin embargo, este módulo de aprendizaje no habilita para
+        seleccionar fluidos, establecer tiempos de protección,
+        aplicar tratamientos o tomar decisiones de despegue.
+      </p>
+
+      <p>
+        La correspondencia exacta de ciertos numerales y formatos
+        permanece pendiente de validación técnica. Esa limitación
+        no modifica los conceptos estudiados, pero impide
+        presentar como definitivo un fundamento que todavía
+        no está aclarado.
+      </p>
+    `
+  )
+];
+
+/* M03 */
+
+modulos[3].leccionesNuevas = [
+  leccionCurso(
+    "1. Dos dimensiones de una operación especial",
+    `
+      <p>
+        Una operación especial requiere analizar tanto las
+        condiciones técnicas de la aeronave como la capacidad del
+        solicitante para realizar la operación. Estas dimensiones
+        se relacionan, pero no son intercambiables.
+      </p>
+
+      <p>
+        La aprobación de aeronavegabilidad se ocupa de los
+        aspectos técnicos correspondientes: equipos instalados,
+        configuración, documentación de certificación,
+        mantenimiento e inspección. La aprobación operacional
+        considera el uso de esa capacidad por el explotador,
+        incluidos procedimientos y demostraciones.
+      </p>
+
+      ${mapaCurso("Aeronavegabilidad y operación", [
+        ["Aeronavegabilidad", "¿La configuración y su soporte técnico cumplen las condiciones aplicables?"],
+        ["Operacional", "¿El solicitante demuestra capacidad y procedimientos para realizar la operación?"]
+      ])}
+
+      <p>
+        Por ejemplo, contar con el equipo instalado no demuestra
+        por sí solo que el personal y los procedimientos del
+        solicitante permiten realizar la operación. A la inversa,
+        disponer de procedimientos no sustituye la demostración
+        de las condiciones técnicas de la aeronave.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "2. CAT II y CAT III: revisión técnica y participación operacional",
+    `
+      <p>
+        Las operaciones CAT II y CAT III se relacionan con
+        aproximaciones por instrumentos y mínimos de utilización.
+        Su estudio debe distinguir los criterios de categoría de
+        los procesos utilizados para obtener las aprobaciones.
+        Aquí se desarrolla el proceso documental, sin utilizar
+        valores de mínimos como autorización operacional.
+      </p>
+
+      <p>
+        En la revisión técnica se consideran equipamiento,
+        certificación, mantenimiento, inspección y capacitación
+        del personal técnico de mantenimiento. Entre los sistemas
+        asociados se encuentran guía de localizador y trayectoria
+        de descenso, piloto automático, directores de vuelo,
+        empuje automático y radioaltímetro, según la configuración
+        y criterios aplicables.
+      </p>
+
+      <p>
+        La instalación puede formar parte de la configuración
+        original o derivar de una modificación respaldada
+        técnicamente. Por eso no basta observar físicamente
+        un equipo: es necesario revisar la documentación que
+        corresponde a su instalación y mantenimiento.
+      </p>
+
+      ${flujoCurso("Aprobación de aeronavegabilidad CAT II/III", [
+        ["Solicitud", "Identificar operación y aeronave."],
+        ["Revisión técnica", "Examinar configuración, equipos y documentación."],
+        ["Guía de revisión", "Consultar IA-012-A dentro del procedimiento correspondiente."],
+        ["Respuesta", "Emitir resultado y conservar soporte documental."]
+      ])}
+
+      <p>
+        Si los requisitos se cumplen satisfactoriamente, el
+        resultado se comunica mediante el oficio correspondiente.
+        Ese oficio de aeronavegabilidad no representa por sí mismo
+        la aprobación operacional. Si hay deficiencias, se
+        comunican observaciones que deben atenderse.
+      </p>
+
+      <p>
+        La coordinación operacional incorpora al Líder de Equipo
+        de Certificación —LEC— y a las especialidades participantes.
+        La revisión técnica, la evaluación en simulador y la
+        validación operacional deben conservar sus objetivos y
+        registros propios, sin tratarse como una sola comprobación.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "3. EDTO: de la planificación a la demostración",
+    `
+      <p>
+        Las operaciones con tiempo de desviación extendido
+        requieren relacionar la planificación de la operación,
+        los aeródromos de alternativa en ruta, la información
+        disponible para la tripulación y las condiciones técnicas
+        y operacionales del solicitante.
+      </p>
+
+      <p>
+        El estudio no debe reducirse a memorizar un tiempo:
+        también intervienen control de operaciones, despacho,
+        procedimientos e instrucción. La identificación de
+        alternativas y la información sobre su situación operacional
+        y meteorológica forman parte de la preparación.
+      </p>
+
+      ${flujoCurso("Proceso de certificación EDTO", [
+        ["Fase 1", "Información inicial y orientación al solicitante."],
+        ["Fase 2", "Planificación y desarrollo del programa."],
+        ["Fase 3", "Evaluación de documentación."],
+        ["Fase 4", "Demostración operacional."],
+        ["Fase 5", "Emisión de la aprobación correspondiente."]
+      ])}
+
+      <p>
+        La fase inicial permite conocer la operación propuesta,
+        las rutas, las aeronaves y la experiencia del solicitante.
+        Después se desarrolla el programa conforme al plan
+        aceptado. La evaluación documental comprueba que la
+        información atiende los requisitos del proceso.
+      </p>
+
+      <p>
+        La demostración permite corroborar lo que se ha descrito
+        en documentos y procedimientos. Se contemplan revisiones
+        de aeronavegabilidad y verificaciones relacionadas con
+        simulador, tierra y vuelo, según corresponda. El trabajo
+        coordinado evita que una conclusión de un área sustituya
+        sin sustento la revisión de otra.
+      </p>
+
+      <p>
+        Los registros de cada etapa permiten relacionar
+        observaciones, respuestas y resultados. La aprobación
+        final debe apoyarse en el cumplimiento de las fases,
+        no únicamente en la entrega de un manual.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "4. SET-IMC: aeronave, confiabilidad y capacidad operacional",
+    `
+      <p>
+        SET-IMC se refiere a operaciones de aeronaves monomotoras
+        de turbina en vuelo nocturno o en condiciones meteorológicas
+        de vuelo por instrumentos. La revisión abarca confiabilidad
+        del motor, sistemas y equipos, información de vuelo,
+        procedimientos y preparación del explotador.
+      </p>
+
+      <p>
+        El análisis técnico no se limita a comprobar que la aeronave
+        tiene un motor de turbina. Debe relacionar la combinación
+        motor y planeador con la certificación para el tipo de
+        operación y con la evidencia requerida en el procedimiento.
+      </p>
+
+      ${mapaCurso("Áreas de análisis SET-IMC", [
+        ["Motor", "Confiabilidad y equipamiento correspondiente."],
+        ["Energía", "Generación independiente y suministro de emergencia."],
+        ["Instrumentos", "Información esencial y fuentes de energía."],
+        ["Navegación", "Capacidad para apoyar la planificación y la operación."],
+        ["Explotador", "Procedimientos, instrucción y demostración."]
+      ])}
+
+      <p>
+        Entre los sistemas estudiados se incluyen radioaltímetro,
+        fuentes de energía eléctrica, instrumentos de actitud,
+        medios de rearranque, radar meteorológico y navegación
+        de área, dentro de las condiciones aplicables. Cada
+        elemento debe revisarse en su contexto; una enumeración
+        didáctica no equivale a una lista completa de aprobación.
+      </p>
+
+      <p>
+        La guía IA-013-A se relaciona con la aprobación de
+        aeronavegabilidad. Esa aprobación forma parte del proceso
+        necesario para la aprobación operacional, pero no la
+        sustituye. Los resultados y las discrepancias deben
+        documentarse y conservarse en el expediente.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "5. EFB y C-EFB: equipo, aplicaciones y uso",
+    `
+      <p>
+        Un maletín de vuelo electrónico —EFB— es un sistema de
+        información que comprende equipo y aplicaciones para
+        apoyar tareas de la tripulación de vuelo. El C-EFB se
+        relaciona con tareas de la tripulación de cabina.
+        Su función incluye almacenar, actualizar, mostrar y
+        procesar información.
+      </p>
+
+      <p>
+        El análisis debe separar el dispositivo físico de sus
+        aplicaciones. Un equipo portátil no forma parte de la
+        configuración de la aeronave de la misma manera que un
+        equipo instalado. No obstante, las modificaciones de la
+        aeronave para utilizar un dispositivo portátil pueden
+        necesitar la aprobación de aeronavegabilidad pertinente.
+      </p>
+
+      ${mapaCurso("Dos clasificaciones diferentes", [
+        ["Portátil", "Dispositivo electrónico portátil; revisar sus interfaces y condiciones de utilización."],
+        ["Instalado", "Integrado en la aeronave y sujeto al control de diseño y aeronavegabilidad."],
+        ["Aplicación tipo A", "No sustituye documentos, sistemas o equipos exigidos en los términos del esquema estudiado."],
+        ["Aplicación tipo B", "Puede sustituir información documental requerida y necesita la aprobación específica correspondiente."]
+      ])}
+
+      <p>
+        Los aspectos de sujeción, alimentación eléctrica y
+        posicionamiento requieren revisión técnica. El uso
+        operacional añade evaluación de riesgos, procedimientos,
+        instrucción, gestión de aplicaciones y disponibilidad de
+        información suficiente ante una falla.
+      </p>
+
+      ${flujoCurso("Revisión integral de EFB y C-EFB", [
+        ["Equipo", "Identificar dispositivo e instalación."],
+        ["Aplicaciones", "Precisar funciones e información utilizada."],
+        ["Procedimientos", "Establecer gestión, uso e instrucción."],
+        ["Contingencia", "Considerar la disponibilidad de información ante fallas."],
+        ["Aprobación", "Documentar el resultado según el proceso aplicable."]
+      ])}
+
+      <p>
+        La fotografía de una tableta no demuestra el cumplimiento
+        del sistema completo. El expediente debe permitir comprender
+        qué funciones se utilizarán, cómo se administrarán y cómo
+        se integran con las tareas de vuelo o cabina.
+      </p>
+    `
+  )
+];
+
+/* M04 */
+
+modulos[4].leccionesNuevas = [
+  leccionCurso(
+    "1. Qué autoriza un AOC",
+    `
+      <p>
+        El Certificado de Explotador de Servicios Aéreos —AOC—
+        autoriza operaciones de transporte aéreo comercial
+        especificadas. Su alcance se interpreta junto con las
+        especificaciones de operación, donde se incluyen
+        autorizaciones, limitaciones y provisiones particulares.
+      </p>
+
+      <p>
+        Obtener el certificado requiere demostrar una organización
+        adecuada, control y supervisión de operaciones,
+        instrucción y arreglos de servicios de escala y
+        mantenimiento acordes con la naturaleza y amplitud de
+        la operación. La contratación de terceros también
+        requiere políticas y procedimientos del explotador.
+      </p>
+
+      ${mapaCurso("Capacidad que debe demostrarse", [
+        ["Organización", "Estructura, responsabilidades y personal."],
+        ["Operaciones", "Métodos de control y supervisión."],
+        ["Instrucción", "Preparación del personal para sus funciones."],
+        ["Servicios y mantenimiento", "Recursos y arreglos adecuados al alcance."]
+      ])}
+
+      <p>
+        El proceso comprende cinco fases generales. Cada una
+        tiene una finalidad distinta: orientar, recibir la
+        solicitud formal, evaluar documentos, comprobar capacidad
+        y emitir el resultado de certificación.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "2. Fase 1: presolicitud",
+    `
+      <p>
+        La presolicitud comienza con la intención de obtener
+        el certificado y permite que el interesado conozca el
+        proceso. La forma PISA reúne información preliminar
+        sobre el solicitante y la operación propuesta.
+      </p>
+
+      <p>
+        La reunión inicial permite confirmar la información,
+        revisar los requisitos y explicar los compromisos del
+        proceso. La participación de directivos y responsables
+        de operaciones, mantenimiento, capacitación y otras
+        áreas ayuda a que la planificación corresponda a la
+        organización real.
+      </p>
+
+      <p>
+        También se orienta sobre listas de verificación,
+        programación de eventos, especificaciones de operación
+        y documentos necesarios. La finalidad no es aprobar
+        anticipadamente toda la operación, sino preparar una
+        solicitud formal coherente.
+      </p>
+
+      ${flujoCurso("Presolicitud: preparar el proceso", [
+        ["Intención", "Definir qué operación se pretende realizar."],
+        ["Información inicial", "Integrar datos mediante PISA."],
+        ["Orientación", "Comprender requisitos, especialidades y compromisos."],
+        ["Preparación", "Organizar el paquete de solicitud formal."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "3. Fase 2: solicitud formal",
+    `
+      <p>
+        La solicitud formal integra el paquete con el que el
+        interesado presenta su proyecto de operación. Comprende,
+        entre otros elementos, proyecto de especificaciones,
+        manuales generales, capacitación, estructura directiva,
+        documentos de contratos y relaciones de aeronaves y
+        aeródromos, según corresponda.
+      </p>
+
+      <p>
+        La programación de eventos conecta los documentos con
+        la disponibilidad de recursos: aeronaves, instalaciones,
+        capacitación y demostraciones. Las fechas necesitan
+        una secuencia lógica. No tendría sentido programar una
+        inspección de instalaciones antes de que estén disponibles
+        o una demostración antes de preparar los procedimientos
+        y al personal.
+      </p>
+
+      <p>
+        El LEC coordina la distribución de la información a las
+        especialidades. La revisión general del paquete formal
+        no equivale todavía a la aprobación detallada de todos
+        sus documentos.
+      </p>
+
+      ${mapaCurso("Paquete formal: elementos relacionados", [
+        ["Proyecto operacional", "Aeronaves, rutas, aeródromos y especificaciones."],
+        ["Organización", "Responsables y estructura gerencial."],
+        ["Manuales", "Operación, mantenimiento y capacitación."],
+        ["Recursos y contratos", "Disponibilidad de servicios e instalaciones."],
+        ["Programa de eventos", "Secuencia de entregas, capacitación e inspecciones."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "4. Fase 3: evaluación de documentos",
+    `
+      <p>
+        Una vez aceptada la solicitud formal, se realiza la
+        evaluación completa de los documentos requeridos. No
+        consiste sólo en confirmar que cada archivo tiene
+        nombre y portada: se analiza el contenido y su
+        correspondencia con los requisitos y la operación.
+      </p>
+
+      <p>
+        Si un manual está incompleto, contiene procedimientos
+        deficientes o no atiende los requisitos aplicables,
+        las observaciones deben comunicarse para su corrección.
+        Cuando el resultado es satisfactorio, la información
+        se acepta o aprueba según la condición que corresponda.
+        Aceptación y aprobación no deben utilizarse sin distinguir
+        el tipo de documento.
+      </p>
+
+      <p>
+        La declaratoria de cumplimiento relaciona requisitos
+        con manuales, programas y procedimientos. Su utilidad
+        consiste en facilitar la trazabilidad: permite ubicar
+        dónde se atiende cada requisito y revisar esa
+        correspondencia.
+      </p>
+
+      ${flujoCurso("Evaluación documental y corrección", [
+        ["Documento", "Revisar contenido y alcance."],
+        ["Comparación", "Relacionar con requisitos aplicables."],
+        ["Resultado", "Identificar suficiencia o deficiencias."],
+        ["Atención", "Corregir y volver a evaluar cuando corresponda."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "5. Fase 4: demostración e inspección",
+    `
+      <p>
+        En esta fase se pasa de lo descrito a lo observado.
+        Se revisan instalaciones y aeronaves y se observa al
+        personal en sus funciones. La finalidad es comprobar
+        capacidad e implementación de los procedimientos.
+      </p>
+
+      <p>
+        La revisión comprende, según la operación, capacitación,
+        instalaciones de base y estaciones, registros,
+        despacho y seguimiento de vuelos, mantenimiento,
+        aeronaves, MEL y CDL, peso y balance y demostraciones
+        de emergencia.
+      </p>
+
+      <p>
+        Los vuelos de demostración permiten evaluar la capacidad
+        del solicitante para efectuar operaciones y mantener
+        sus aeronaves conforme a los requisitos. El Plan de
+        Vuelos de Demostración —PVD— debe ser revisado antes de
+        ejecutar la demostración.
+      </p>
+
+      ${flujoCurso("Proceso propio de los vuelos de demostración", [
+        ["Solicitud", "Identificar la demostración requerida."],
+        ["Presentación del PVD", "Comprobar integridad del plan."],
+        ["Evaluación del PVD", "Analizar actividades y objetivos."],
+        ["Ejecución", "Observar y evaluar la demostración."],
+        ["Informe", "Documentar resultados y recomendación."]
+      ])}
+
+      <p>
+        Este proceso de vuelos se encuentra dentro de la
+        demostración e inspección del AOC. No debe confundirse
+        con las cinco fases generales de certificación.
+        Sus resultados pueden sustentar una recomendación
+        favorable o señalar anomalías que impiden continuar.
+      </p>
+
+      <p>
+        La evaluación de evacuación y amarizaje se relaciona
+        con procedimientos, equipo, preparación y actuación de
+        la tripulación. Se estudia aquí su finalidad dentro del
+        proceso; la ejecución necesita condiciones y supervisión
+        específicas que esta página no proporciona.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "6. Fase 5: certificación y vigilancia posterior",
+    `
+      <p>
+        La certificación se apoya en los resultados satisfactorios
+        de la evaluación documental y de la demostración e
+        inspección. El AOC se relaciona con las especificaciones
+        de operación aprobadas y con la documentación de soporte.
+      </p>
+
+      <p>
+        Las especificaciones organizan disposiciones generales,
+        autorizaciones y limitaciones en ruta y aeródromos,
+        mantenimiento, peso y balance y otras materias aplicables.
+        No basta conocer que existe un certificado: es necesario
+        comprender qué operaciones y condiciones comprende.
+      </p>
+
+      <p>
+        Después de la emisión se mantiene la vigilancia del
+        cumplimiento. Renovación y enmienda son trámites distintos:
+        una se relaciona con la continuidad del certificado y
+        la otra con cambios en su alcance o condiciones.
+        Los plazos y la vigencia deben comprobarse en las
+        disposiciones correspondientes antes de utilizarlos
+        para un trámite real.
+      </p>
+
+      ${flujoCurso("Certificación no significa fin de la vigilancia", [
+        ["Emisión", "AOC y especificaciones de operación."],
+        ["Operación", "Conservar las condiciones autorizadas."],
+        ["Vigilancia", "Revisar continuidad del cumplimiento."],
+        ["Cambios", "Gestionar enmiendas o renovación según corresponda."]
+      ])}
+    `
+  )
+];
+
+/* M05 */
+
+modulos[5].leccionesNuevas = [
+  leccionCurso(
+    "1. Qué se verifica en una facilidad de estación",
+    `
+      <p>
+        Una inspección de facilidades de estación comprueba
+        que el taller propio o contratado dispone de recursos
+        adecuados para prestar los servicios de mantenimiento
+        previstos. El análisis relaciona instalaciones, personal,
+        información técnica, herramientas, materiales y
+        procedimientos con el alcance del servicio.
+      </p>
+
+      <p>
+        El tamaño o la apariencia de una instalación no demuestra
+        por sí solo su adecuación. Lo importante es determinar
+        si los recursos permiten realizar las tareas que
+        corresponden a esa estación, dentro de la organización
+        y los procedimientos aplicables.
+      </p>
+
+      ${mapaCurso("Recursos que deben funcionar de forma conjunta", [
+        ["Personal", "Competencia y habilitación para las tareas."],
+        ["Datos", "Información técnica disponible y actualizada."],
+        ["Herramientas", "Equipo apropiado y control aplicable."],
+        ["Almacén", "Identificación, preservación y condiciones de almacenamiento."],
+        ["Instalaciones", "Entorno adecuado para el trabajo."],
+        ["Procedimientos", "Forma de realizar y controlar las actividades."]
+      ])}
+
+      <p>
+        La revisión puede corresponder a instalaciones nacionales
+        o en el extranjero. El análisis debe conservar el contexto
+        del prestador, su autorización y los servicios que
+        efectivamente proporcionará.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "2. Identificación del prestador y alcance del servicio",
+    `
+      <p>
+        El expediente debe permitir identificar al prestador,
+        su permiso o certificado y los datos de contacto. El
+        Manual de Procedimientos del Taller y su autorización
+        ayudan a determinar el nivel de mantenimiento y la
+        complejidad de la instalación.
+      </p>
+
+      <p>
+        Si el servicio es contratado, el contrato debe leerse
+        en relación con los trabajos que se pretenden realizar.
+        Tener un contrato firmado no demuestra que incluya
+        todas las tareas necesarias. Se revisan el alcance,
+        las condiciones especiales, la disponibilidad de personal
+        y la designación del responsable de estación.
+      </p>
+
+      ${flujoCurso("Relacionar contrato y capacidad", [
+        ["Servicio previsto", "Precisar qué mantenimiento se necesita."],
+        ["Prestador", "Identificar autorización y responsable."],
+        ["Contrato", "Revisar alcance y condiciones."],
+        ["Recursos", "Comprobar disponibilidad para atender el servicio."]
+      ])}
+
+      <p>
+        Por ejemplo, si una condición contractual exige cierta
+        disponibilidad de personal, la inspección debe relacionar
+        esa condición con la organización de la estación.
+        El análisis documental adquiere sentido cuando se
+        compara con la capacidad real.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "3. Personal técnico: licencia y preparación",
+    `
+      <p>
+        La relación del personal técnico permite identificar
+        quién realizará las tareas. Incluye nombre, número
+        de licencia, clase, vigencia, especialidad y puesto,
+        conforme al esquema documental estudiado.
+      </p>
+
+      <p>
+        La revisión de la licencia y la revisión de la
+        capacitación se complementan. La primera identifica
+        la habilitación correspondiente; la segunda permite
+        comprobar preparación para aeronaves, equipos,
+        procedimientos y nivel de mantenimiento.
+      </p>
+
+      <p>
+        En los supuestos de servicio contratado también se
+        contempla evidencia de formación en políticas y
+        procedimientos del operador y factores humanos.
+        La preparación no debe asumirse por el hecho de que
+        la persona aparezca en una relación de empleados.
+      </p>
+
+      ${flujoCurso("Del nombre a la evidencia de competencia", [
+        ["Identidad", "Relacionar a la persona con su puesto."],
+        ["Licencia", "Revisar los datos y alcance correspondientes."],
+        ["Capacitación", "Comprobar constancias pertinentes."],
+        ["Actividad", "Relacionar preparación y tareas asignadas."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "4. Información técnica, equipo y herramientas",
+    `
+      <p>
+        El trabajo requiere manuales, boletines y demás
+        información técnica necesaria para las aeronaves o
+        componentes atendidos. La revisión incluye comprobar
+        cómo se accede a esa información y cómo se reciben
+        sus actualizaciones.
+      </p>
+
+      <p>
+        Una relación de manuales es un punto de partida,
+        no evidencia completa de acceso. Si la información
+        se obtiene a través del operador, debe comprenderse
+        cómo se utiliza ese soporte en la estación y si está
+        disponible para las tareas correspondientes.
+      </p>
+
+      <p>
+        El equipo y las herramientas deben relacionarse con
+        los trabajos previstos. La revisión considera
+        disponibilidad y calibración cuando aplique.
+        Incluso una herramienta común puede resultar necesaria
+        para una tarea y no encontrarse disponible.
+      </p>
+
+      ${mapaCurso("Tres comprobaciones diferentes", [
+        ["Disponibilidad", "¿Se dispone del recurso cuando se necesita?"],
+        ["Adecuación", "¿Corresponde a la tarea prevista?"],
+        ["Control", "¿Tiene la condición y calibración aplicables?"]
+      ])}
+
+      <p>
+        Estas comprobaciones evitan una conclusión basada
+        únicamente en inventarios. Una lista extensa no
+        demuestra que todos los recursos sean pertinentes,
+        estén disponibles o tengan el control requerido.
+      </p>
+    `
+  ),
+
+  leccionCurso(
+    "5. Almacén, refacciones y preservación",
+    `
+      <p>
+        El almacenamiento debe proteger los artículos frente
+        a deterioro y daños. Se revisan identificación,
+        segregación y preservación de componentes, así como
+        condiciones del entorno adecuadas a los materiales.
+      </p>
+
+      <p>
+        La identificación permite conocer qué artículo se
+        encuentra almacenado y relacionarlo con su control.
+        La segregación evita mezclar elementos que requieren
+        tratamiento distinto. La preservación mantiene la
+        protección necesaria durante el almacenamiento.
+      </p>
+
+      <p>
+        Entre los aspectos de revisión se encuentran evitar
+        contacto metal con metal cuando corresponda, disponer
+        de condiciones adecuadas para componentes sensibles
+        a descarga electrostática y revisar temperatura o
+        humedad según las necesidades de los artículos.
+      </p>
+
+      <p>
+        Los materiales con límite de vida o vigencia requieren
+        revisión de su condición temporal. Los productos
+        considerados mercancías peligrosas necesitan
+        segregación conforme al esquema de compatibilidad
+        aplicable. No todos los materiales se controlan
+        de la misma manera.
+      </p>
+
+      ${mapaCurso("Capas de control en el almacén", [
+        ["Identificar", "Reconocer el artículo y su condición."],
+        ["Separar", "Mantener la segregación necesaria."],
+        ["Proteger", "Aplicar preservación y condiciones ambientales."],
+        ["Controlar vigencia", "Revisar límites de vida o fechas aplicables."],
+        ["Atender sensibilidad", "Considerar descarga electrostática u otras condiciones."]
+      ])}
+    `
+  ),
+
+  leccionCurso(
+    "6. Procedimientos e inspección de la aplicación",
+    `
+      <p>
+        La revisión documental se complementa observando
+        servicios de mantenimiento. El objetivo es comprobar
+        que las actividades se realizan conforme a los
+        procedimientos establecidos y con los recursos
+        identificados en el expediente.
+      </p>
+
+      <p>
+        Si existe un procedimiento de herramienta controlada,
+        la observación permite relacionar su uso con la
+        identificación y evidencia de control. Si existe
+        un procedimiento de información técnica, se puede
+        relacionar con el acceso efectivo a los documentos
+        necesarios. Son ejemplos didácticos de la conexión
+        entre lo escrito y lo realizado.
+      </p>
+
+      <p>
+        Las instalaciones también se revisan conforme al
+        nivel de mantenimiento previsto. La conclusión debe
+        integrar el expediente y la comprobación de recursos,
+        no depender de una sola fotografía o de una lista
+        de documentos recibidos.
+      </p>
+
+      ${flujoCurso("Cerrar la revisión con trazabilidad", [
+        ["Documento", "Identificar el procedimiento previsto."],
+        ["Observación", "Comprobar cómo se realiza la tarea."],
+        ["Comparación", "Relacionar práctica y requisito."],
+        ["Resultado", "Registrar evidencia y discrepancias."]
+      ])}
+
+      <p>
+        La guía AFAC 145.1/22G es la referencia identificada
+        para esta revisión. Sus campos deben consultarse en
+        el documento correspondiente. La respuesta administrativa
+        definitiva debe conservar la correspondencia con el
+        trámite de facilidades de estación y no confundirse
+        automáticamente con una aprobación de manual.
+      </p>
+    `
+  )
+];
+
+/* FUENTES BIBLIOGRÁFICAS */
+
+const fuentesActualizadas = [
+  "M00-CR-F-IVA-A-01-R00-OCT-2025.pptx",
+  "M01-CR-F-IVA-A-01-R00-OCT-2025-1.pptx",
+  "M02-CR-F-IVA-A-01-R00-OCT-2025.pptx",
+  "M03-CR-F-IVA-A-01-R00-OCT-2025.pptx",
+  "M04-CR-F-IVA-A-01-R00-OCT-2025.pptx",
+  "M05-CR-F-IVA-A-01-R00-OCT-2025.pptx"
+];
+
+/* AJUSTE DE REDACCIÓN DE LAS ACTIVIDADES EXISTENTES */
+
+modulos[1].preguntas[0].explicacion =
+  "Organismos de cooperación, asociaciones de la industria y autoridades tienen funciones diferentes.";
+
+modulos[1].preguntas[1].texto =
+  "¿Qué relación existe entre PANS y SARPS?";
+
+modulos[1].preguntas[1].explicacion =
+  "Los PANS y los SARPS tienen categorías distintas; no deben interpretarse como documentos equivalentes.";
+
+modulos[1].preguntas[2].explicacion =
+  "El personal técnico cualificado y la orientación técnica forman parte de los elementos para establecer el sistema.";
+
+modulos[1].preguntas[3].explicacion =
+  "La vigilancia continua forma parte de la aplicación del sistema de vigilancia.";
+
+modulos[1].preguntas[4].explicacion =
+  "El cumplimiento documental y la implementación deben revisarse de manera complementaria.";
+
+modulos[1].preguntas[5].explicacion =
+  "El hallazgo necesita fundamento aplicable y evidencia que permita comprobar la condición observada.";
+
+modulos[2].preguntas[2].texto =
+  "¿Cuál de los siguientes es un contaminante considerado en este tema?";
+
+modulos[2].preguntas[2].explicacion =
+  "La escarcha es uno de los contaminantes relacionados con el concepto de Avión Limpio.";
+
+modulos[2].preguntas[3].explicacion =
+  "El trámite se organiza en recepción de solicitud, análisis de información y respuesta.";
+
+modulos[3].preguntas[0].explicacion =
+  "La aprobación de aeronavegabilidad y la operacional corresponden a dimensiones diferentes del proceso.";
+
+modulos[3].preguntas[2].texto =
+  "¿Qué operación corresponde al tema SET-IMC?";
+
+modulos[3].preguntas[2].explicacion =
+  "SET-IMC se refiere a aeronaves monomotoras de turbina en vuelo nocturno o en condiciones meteorológicas de vuelo por instrumentos.";
+
+modulos[3].preguntas[3].explicacion =
+  "Los EFB pueden ser portátiles o instalados; la configuración determina aspectos de su revisión.";
+
+modulos[4].preguntas[2].texto =
+  "¿Cuál es una función del LEC en el proceso?";
+
+modulos[4].preguntas[5].opciones[2] =
+  "No; se mantiene la vigilancia posterior";
+
+modulos[4].preguntas[5].explicacion =
+  "La emisión del certificado no elimina la vigilancia del mantenimiento de las condiciones autorizadas.";
+
+modulos[4].preguntas[7].explicacion =
+  "Las deficiencias documentales deben comunicarse y atenderse antes de considerar satisfactorio ese aspecto de la evaluación.";
+
+modulos[5].preguntas[1].explicacion =
+  "La revisión del personal relaciona licencias, calificaciones y evidencias de capacitación.";
+
+modulos[5].preguntas[2].explicacion =
+  "Debe comprobarse la disponibilidad de información técnica y el acceso a sus actualizaciones.";
+
+modulos[5].preguntas[3].texto =
+  "¿Cuándo se revisa la calibración de equipos o herramientas?";
+
+modulos[5].preguntas[3].explicacion =
+  "La calibración se revisa cuando aplica al equipo o herramienta correspondiente.";
+
+modulos[5].preguntas[5].explicacion =
+  "Observar servicios permite relacionar los procedimientos documentados con su aplicación.";
+
+/* NOTAS DE CONTROL: separadas del contenido principal */
+
+const notasTecnicasActualizadas = {
+  1: "Las fechas de reforma y versiones deben verificarse antes de utilizar los documentos en un trámite real.",
+  2: "La correspondencia exacta entre algunos numerales, referencias y la lista de verificación requiere aclaración técnica.",
+  3: "Se excluyen de la evaluación los mínimos operacionales, la definición simplificada de EDTO y los identificadores inconsistentes. RVSM no se integra como procedimiento SET-IMC.",
+  4: "Vigencia, plazos, horas de demostración y ciertos identificadores de formatos requieren validación antes de uso administrativo.",
+  5: "La respuesta administrativa del trámite debe aclararse sin confundir facilidades de estación con aprobación de manuales."
+};
+
+/* ACTUALIZACIÓN DE LA VISUALIZACIÓN SIN BORRAR LAS ACTIVIDADES */
+
+const mostrarAntesDeActualizar = mostrar;
+
+mostrar = function(indice) {
+  mostrarAntesDeActualizar(indice);
+
+  const contenedor = document.getElementById("contenido");
+  const modulo = modulos[indice];
+
+  if (indice === 0) {
+    contenedor.querySelector(".grid")?.remove();
+    contenedor.querySelector("figure")?.remove();
+    contenedor.querySelector(".aviso")?.remove();
+
+    const flujoAnterior = contenedor.querySelector(".flujo");
+
+    if (flujoAnterior) {
+      flujoAnterior.previousElementSibling?.remove();
+      flujoAnterior.remove();
+    }
+
+    return;
+  }
+
+  /* Se sustituyen los párrafos anteriores por lecciones desarrolladas. */
+
+  const bloquesAnteriores = [
+    ...contenedor.querySelectorAll(".bloque")
+  ];
+
+  const puntoDeInsercion = bloquesAnteriores[0];
+
+  const nuevasLecciones = document.createElement("div");
+  nuevasLecciones.className = "lecciones-desarrolladas";
+
+  nuevasLecciones.innerHTML = modulo.leccionesNuevas
+    .map(leccion => `
+      <section class="leccion-ampliada">
+        <h3>${leccion.titulo}</h3>
+        ${leccion.html}
+      </section>
+    `)
+    .join("");
+
+  if (puntoDeInsercion) {
+    puntoDeInsercion.before(nuevasLecciones);
+  }
+
+  bloquesAnteriores.forEach(elemento => elemento.remove());
+
+  /* Se retira la ilustración genérica:
+     ahora hay diagramas vinculados a cada explicación. */
+
+  contenedor.querySelector("figure")?.remove();
+
+  /* Se retira el flujo genérico anterior para evitar duplicaciones. */
+
+  const flujoAnterior = contenedor.querySelector(".flujo");
+
+  if (flujoAnterior) {
+    flujoAnterior.previousElementSibling?.remove();
+    flujoAnterior.remove();
+  }
+
+  const avisoAnterior = contenedor.querySelector(".aviso");
+
+  const notas = document.createElement("details");
+  notas.className = "fuente-curso";
+
+  const tituloNotas = document.createElement("summary");
+  tituloNotas.textContent = "Fuente bibliográfica y control técnico";
+
+  const fuente = document.createElement("p");
+  fuente.textContent =
+    "Fuente: " + fuentesActualizadas[indice] +
+    ". Se utilizaron los contenidos y las notas de las diapositivas.";
+
+  const control = document.createElement("p");
+  control.textContent = notasTecnicasActualizadas[indice];
+
+  const alcance = document.createElement("p");
+  alcance.textContent =
+    "Contenido didáctico basado en la documentación del curso. " +
+    "No constituye confirmación independiente de vigencia normativa " +
+    "ni sustituye procedimientos y documentos aprobados.";
+
+  notas.append(tituloNotas, fuente, control, alcance);
+
+  if (avisoAnterior) {
+    avisoAnterior.replaceWith(notas);
+  } else {
+    nuevasLecciones.after(notas);
+  }
+};
+
+/* Ajuste del pie de página para evitar llamarlo resumen. */
+
+document.querySelector("footer").textContent =
+  "Curso recurrente IVA-A-01 · Desarrollo didáctico basado en las " +
+  "presentaciones M00–M05. Los diagramas son explicativos y no " +
+  "sustituyen formatos oficiales ni procedimientos aprobados.";
 mostrar(0);
 </script>
 </body>
