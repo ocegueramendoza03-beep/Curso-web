@@ -133,6 +133,56 @@ progress { width: 100%; height: 20px; }
 </header>
 
 <main>
+  <!-- 1. BLOQUE DE REGRESO/REGISTRO (NUEVO) -->
+  <section class="panel" id="bloque-autenticacion">
+    <h2>Registro y Acceso al Curso</h2>
+    <p>Para ingresar al cuestionario, introduce tu correo institucional para recibir tu código de acceso único.</p>
+    
+    <!-- Paso A: Pedir Correo -->
+    <div id="paso-correo">
+      <label for="email" style="font-weight:bold;">Correo Electrónico:</label>
+      <input type="email" id="email" placeholder="ejemplo@correo.com" style="width: 100%; max-width: 400px; padding: 10px; margin-bottom: 12px; border: 1px solid #dbe4ee; border-radius: 8px;" required>
+      <br>
+      <button type="button" onclick="solicitarCodigo()">Enviar Código de Acceso</button>
+    </div>
+
+    <!-- Paso B: Validar Código (Oculto al inicio) -->
+    <div id="paso-codigo" style="display:none;">
+      <p class="aviso" style="background: #eaf4f7; border-left-color: var(--acento);">Hemos enviado un código a tu correo. Por favor, revísalo e ingrésalo aquí abajo.</p>
+      <label for="codigo" style="font-weight:bold;">Código de Verificación:</label>
+      <input type="text" id="codigo" placeholder="Ej. 123456" style="width: 100%; max-width: 400px; padding: 10px; margin-bottom: 12px; border: 1px solid #dbe4ee; border-radius: 8px;">
+      <br>
+      <button type="button" onclick="verificarCodigo()">Validar e Ingresar</button>
+    </div>
+  </section>
+
+  <!-- 2. CONTENEDOR DEL CURSO (MODIFICADO: Agregamos id="bloque-curso" y style="display:none;") -->
+  <div id="bloque-curso" style="display:none;">
+    <section class="panel">
+      <h2>Antes de comenzar</h2>
+      <p>
+        Recorre los módulos en orden, consulta las explicaciones
+        y contesta las actividades de práctica.
+      </p>
+      <div class="aviso">
+        Versión inicial para revisión. Las actividades no constituyen
+        una acreditación ni una autorización operacional.
+      </div>
+      <p id="avance">Módulos con práctica respondida: 0 de 6</p>
+      <progress id="barra" value="0" max="6">0 de 6</progress>
+    </section>
+
+    <nav id="menu" aria-label="Módulos del curso"></nav>
+    <section id="contenido" class="panel" aria-label="Contenido del módulo"></section>
+
+    <section class="panel">
+      <h2>Resultado de práctica</h2>
+      <p>Cuando hayas respondido las actividades de los seis módulos, podrás consultar el resultado conjunto.</p>
+      <button type="button" id="verResultado">Ver resultado</button>
+      <p id="resultado" role="status"></p>
+    </section>
+  </div>
+</main>
   <section class="panel">
     <h2>Antes de comenzar</h2>
     <p>
